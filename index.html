@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Recipes</title>
+<style>
+:root{--bg:#f2f3ef;--text:#1b2220;--muted:#66726e;--accent:#d3263b;--line:#d9ddd6;--soft:#e6e9e2;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14191a;--text:#eceee9;--muted:#93a09b;--accent:#ff6577;--line:#2b3436;--soft:#1f2729;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14191a;--text:#eceee9;--muted:#93a09b;--accent:#ff6577;--line:#2b3436;--soft:#1f2729;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font:17px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:860px;margin:0 auto;padding:40px 20px 64px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,6vw,3rem);letter-spacing:-.01em}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sub{color:var(--muted);margin:8px 0 0}
+input[type=search]{width:100%;margin:28px 0 8px;padding:12px 14px;background:var(--soft);border:1px solid var(--line);border-radius:6px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.tag{border:1px solid var(--line);background:none;border-radius:99px;padding:4px 12px;font-size:.9rem;cursor:pointer;color:var(--muted)}
+.tag[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.row{display:block;padding:20px 0;border-top:1px solid var(--line);text-decoration:none}
+.row:last-child{border-bottom:1px solid var(--line)}
+.row h2{font-size:1.5rem}
+.row:hover h2{color:var(--accent)}
+.row p{margin:6px 0 0;color:var(--muted)}
+.empty{color:var(--muted);padding:24px 0}
+.back{display:inline-block;margin-bottom:28px;color:var(--muted);text-decoration:none}
+.back:hover{color:var(--accent)}
+.facts{display:flex;flex-wrap:wrap;gap:6px 28px;margin:20px 0 0;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts div{display:flex;gap:8px;align-items:baseline}
+.facts b{font-family:Georgia,serif;font-size:1.25rem}
+.facts span{color:var(--muted);font-size:.9rem}
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:32px;margin-top:32px}
+@media (min-width:760px){.cols{grid-template-columns:300px minmax(0,1fr);gap:48px}}
+h3{font-size:1.3rem;margin-bottom:12px}
+ul.ing{list-style:none;margin:0;padding:0}
+ul.ing li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+ul.ing li.done{text-decoration:line-through;color:var(--muted)}
+ul.ing .e{width:1.5em;text-align:center}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{padding:0 0 14px 6px;max-width:62ch}
+ol.steps li::marker{color:var(--accent);font-weight:700}
+.hint{color:var(--muted);font-size:.85rem;margin:10px 0 0}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+// To add a recipe, copy one block in this list and change the details.
+const RECIPES = [
+  {
+    id: "spicy-ramen-bowl",
+    title: "Spicy Ramen Bowl",
+    blurb: "Shirataki noodles in a Thai red curry coconut broth with gochujang tofu.",
+    servings: 1, calories: "~365", protein: "~20g", fibre: "~7g",
+    tags: ["Spicy", "Noodles", "Tofu", "Single serve"],
+    ingredients: [
+      ["🍜", "½ packet shirataki noodles"],
+      ["🥥", "120ml Real Thai Lite coconut milk"],
+      ["🌶️", "1 tbsp Thai red curry paste"],
+      ["🧄", "2 garlic cloves, chopped"],
+      ["🫒", "1 tsp olive oil for the curry"],
+      ["🍬", "1 tbsp zero calorie sweetener"],
+      ["💧", "100ml water, plus as required"],
+      ["🧂", "Salt as per taste"],
+      ["🌽", "¼ cup boiled corn"],
+      ["🥬", "Bok choy leaves"],
+      ["🥢", "100–120g tofu"],
+      ["🫒", "1 tsp olive oil for cooking tofu"],
+      ["🌶️", "1 tbsp gochujang sauce"],
+      ["🍄", "4–5 mushrooms"],
+      ["🥦", "4–5 broccoli florets, steamed"]
+    ],
+    steps: [
+      "Heat 1 tsp olive oil in a pan and add the chopped garlic. Sauté until fragrant.",
+      "Add the Thai red curry paste and cook briefly.",
+      "Pour in the coconut milk and around 100ml water. Mix well and bring to a boil.",
+      "Add salt and the zero calorie sweetener. Stir well.",
+      "Add the boiled corn and shirataki noodles. Cover and cook for 7 to 8 minutes until the sauce reduces.",
+      "Add the bok choy leaves, cover and cook for another 2 minutes.",
+      "Meanwhile, grate the tofu.",
+      "Heat 1 tsp olive oil in a separate pan. Add the grated tofu and pan fry on both sides until golden brown.",
+      "Add the gochujang sauce and cook for another 4 to 5 minutes, stirring to coat the tofu.",
+      "Stir-fry the broccoli and mushrooms with pepper and salt in a spray of oil.",
+      "Assemble the bowl and dig in ❤️"
+    ]
+  }
+];
+
+const app = document.getElementById("app");
+let query = "", activeTag = "";
+
+function el(tag, props, ...kids) {
+  const n = document.createElement(tag);
+  for (const k in (props || {})) {
+    if (k === "class") n.className = props[k];
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), props[k]);
+    else n.setAttribute(k, props[k]);
+  }
+  kids.flat().forEach(c => n.append(c));
+  return n;
+}
+
+function matches(r) {
+  const q = query.trim().toLowerCase();
+  const hay = [r.title, r.blurb, ...r.tags, ...r.ingredients.map(i => i[1])].join(" ").toLowerCase();
+  return (!q || hay.includes(q)) && (!activeTag || r.tags.includes(activeTag));
+}
+
+function renderList(listEl) {
+  listEl.replaceChildren();
+  const found = RECIPES.filter(matches);
+  if (!found.length) {
+    listEl.append(el("p", { class: "empty" }, "No recipes match. Try a different word or clear the tag filter."));
+    return;
+  }
+  found.forEach(r => listEl.append(
+    el("a", { class: "row", href: "#" + r.id }, el("h2", {}, r.title), el("p", {}, r.blurb))
+  ));
+}
+
+function home() {
+  document.title = "My Recipes";
+  const list = el("div");
+  const tagBar = el("div", { class: "tags" });
+  const allTags = [...new Set(RECIPES.flatMap(r => r.tags))];
+  allTags.forEach(t => {
+    const b = el("button", { class: "tag", "aria-pressed": "false", type: "button" }, t);
+    b.addEventListener("click", () => {
+      activeTag = activeTag === t ? "" : t;
+      tagBar.querySelectorAll(".tag").forEach(x => x.setAttribute("aria-pressed", String(x.textContent === activeTag)));
+      renderList(list);
+    });
+    tagBar.append(b);
+  });
+  const search = el("input", { type: "search", placeholder: "Search by name, ingredient or tag", "aria-label": "Search recipes" });
+  search.value = query;
+  search.addEventListener("input", () => { query = search.value; renderList(list); });
+  app.replaceChildren(
+    el("h1", {}, "My recipes"),
+    el("p", { class: "sub" }, RECIPES.length + (RECIPES.length === 1 ? " recipe" : " recipes") + " so far"),
+    search, tagBar, list
+  );
+  renderList(list);
+}
+
+function detail(r) {
+  document.title = r.title;
+  const fact = (v, l) => el("div", {}, el("b", {}, v), el("span", {}, l));
+  const ing = el("ul", { class: "ing" }, r.ingredients.map(([e, t]) => {
+    const li = el("li", {}, el("span", { class: "e" }, e), el("span", {}, t));
+    li.addEventListener("click", () => li.classList.toggle("done"));
+    return li;
+  }));
+  app.replaceChildren(
+    el("a", { class: "back", href: "#" }, "← All recipes"),
+    el("h1", {}, r.title),
+    el("p", { class: "sub" }, r.blurb),
+    el("div", { class: "facts" },
+      fact(String(r.servings), r.servings === 1 ? "serving" : "servings"),
+      fact(r.calories, "calories"), fact(r.protein, "protein"), fact(r.fibre, "fibre")),
+    el("div", { class: "cols" },
+      el("section", {}, el("h3", {}, "Ingredients"), ing, el("p", { class: "hint" }, "Tap an ingredient to cross it off.")),
+      el("section", {}, el("h3", {}, "How to make it"), el("ol", { class: "steps" }, r.steps.map(s => el("li", {}, s))))
+    )
+  );
+  window.scrollTo(0, 0);
+}
+
+function route() {
+  const id = location.hash.slice(1);
+  const r = RECIPES.find(x => x.id === id);
+  r ? detail(r) : home();
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
